@@ -144,7 +144,7 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 	}
 
 	@Override
-	public void onError(VolleyError error){
+	public void onError(Exception error){
 		Toast.makeText( MainActivity.this , R.string.cannot_load_weather , Toast.LENGTH_SHORT ).show();
 	}
 
@@ -185,7 +185,7 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 			return;
 		}
 
-		WeatherLoader loader = new WeatherLoader( this );
+		WeatherLoader loader = new WeatherLoader();
 		loader.addOnWeatherLoadedListener( this );
 
 		loader.loadWeather( location, getUnits() );

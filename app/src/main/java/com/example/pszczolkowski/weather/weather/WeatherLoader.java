@@ -3,22 +3,15 @@ package com.example.pszczolkowski.weather.weather;
 
 import android.content.Context;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.StringRequest;
 import com.example.pszczolkowski.weather.location.Location;
+import com.example.pszczolkowski.weather.util.FileDownloadTask;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,46 +22,31 @@ import java.util.Locale;
 /**
  * Kod stworzony na bazie https://github.com/survivingwithandroid/Swa-app/tree/master/AndroidYahooWeather
  */
-public class WeatherLoader{
-	private static final int MAX_CACHE_SIZE_BYTES = 1024 * 1024;
-	private Context context;
+public class WeatherLoader {
 	private List<OnWeatherLoadedListener> listeners = new ArrayList<>();
 
 	private final static String YAHOO_WEATHER_URL = "http://weather.yahooapis.com/forecastrss";
-
-	public WeatherLoader(Context context){
-		this.context = context;
-	}
 
 	public void addOnWeatherLoadedListener( OnWeatherLoadedListener listener ){
 		listeners.add( listener );
 	}
 
 	public void loadWeather( final Location location , String unit ){
-			Cache cache = new DiskBasedCache( context.getCacheDir() , MAX_CACHE_SIZE_BYTES );
-			Network network = new BasicNetwork( new HurlStack() );
-			RequestQueue requestQueue = new RequestQueue( cache , network );
-
-			String url = queryUrlForLocation( location.getWoeid(), unit );
-
-
-			StringRequest req = new StringRequest( Request.Method.GET, url, new Response.Listener<String>() {
+			URL url = queryUrlForLocation( location , unit );
+			FileDownloadTask.subscribe( new FileDownloadTask.OnFileDownloadedListener(){
 				@Override
-				public void onResponse(String s) {
-					Weather weather = parseResponse( s );
+				public void onFileDownloaded(String fileContent){
+					Weather weather = parseResponse( fileContent );
 					for( OnWeatherLoadedListener listener : listeners )
 						listener.onWeatherLoaded( location , weather );
 				}
-			}, new Response.ErrorListener() {
-				@Override
-				public void onErrorResponse( VolleyError error ) {
-					for( OnWeatherLoadedListener listener : listeners )
-						listener.onError( error );
-				}
-			});
 
-			requestQueue.add(req);
-			requestQueue.start();
+				@Override
+				public void onFileDownloadError(Exception e){
+					for( OnWeatherLoadedListener listener : listeners )
+						listener.onError( e );
+				}
+			}).execute( url );
 		}
 
 	private static Weather parseResponse (String resp) {
@@ -206,12 +184,18 @@ public class WeatherLoader{
 		return result;
 	}
 
-	private static String queryUrlForLocation(String woeid, String unit) {
-		return  YAHOO_WEATHER_URL + "?w=" + woeid + "&u=" + unit;
+	private static URL queryUrlForLocation( Location location , String unit) {
+		try{
+			return new URL( YAHOO_WEATHER_URL + "?w=" + location.getWoeid() + "&u=" + unit );
+		}catch(MalformedURLException e){
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public static interface OnWeatherLoadedListener{
 		public void onWeatherLoaded( Location location , Weather weather );
-		public void onError( VolleyError error );
+		public void onError( Exception error );
 	}
 }

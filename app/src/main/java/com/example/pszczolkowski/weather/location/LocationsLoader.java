@@ -2,20 +2,18 @@ package com.example.pszczolkowski.weather.location;
 
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.pszczolkowski.weather.util.FileDownloadTask;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -29,7 +27,7 @@ import java.util.Map;
 /**
  * Kod stworzony na bazie https://github.com/survivingwithandroid/Swa-app/tree/master/AndroidYahooWeather
  */
-public class LocationsLoader implements Response.Listener<String> , Response.ErrorListener, LocationsDownloadTask.OnLocationsLoadedListener{
+public class LocationsLoader implements Response.Listener<String> , Response.ErrorListener, FileDownloadTask.OnFileDownloadedListener{
 
 	private static final int MAX_CACHE_SIZE_BYTES = 1024 * 1024;
 	private Context context;
@@ -41,7 +39,7 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 
 	public void loadLocationsWithName( String locationName ){
 		URL url = queryUrlFor( locationName );
-		LocationsDownloadTask.subscribe( this ).execute( url );
+		FileDownloadTask.subscribe( this ).execute( url );
 	}
 
 	public void addOnLocationsLoadedListener( OnLocationsLoadedListener listener ){
@@ -162,12 +160,12 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 	}
 
 	@Override
-	public void onLocationsLoaded(String response){
+	public void onFileDownloaded(String response){
 		notifyListenersAboutSuccess( parse( response ) );
 	}
 
 	@Override
-	public void onLocationsLoadError(Exception e){
+	public void onFileDownloadError(Exception e){
 		notifyListenersAboutError( e );
 	}
 
