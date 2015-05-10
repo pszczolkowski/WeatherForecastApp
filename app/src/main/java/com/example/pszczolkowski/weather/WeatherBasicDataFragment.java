@@ -50,7 +50,7 @@ public class WeatherBasicDataFragment extends Fragment{
 
 		// WCZYTANIE OBRAZKA W ASYNCHRONICZNYM ZADANIU
 		ImageView weatherImage = (ImageView) view.findViewById( R.id.weather_image );
-		if( weather.imageUrl != null )
+		if( weather.imageUrl != null && getActivity() != null )
 			new LoadImageTask( getActivity() , weatherImage ).execute( weather.imageUrl );
 	}
 

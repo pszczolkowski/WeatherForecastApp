@@ -27,10 +27,11 @@
     <string name="weather_sunrise_label">Sun rise:</string>
     <string name="weather_sunset_label">Sun set:</string>
     <string name="title_activity_select_location">SelectLocationActivity</string>
-    <string name="celsius">celsius</string>
-    <string name="fahrenheit">fahrenheit</string>
+    <string name="metric">metric</string>
+    <string name="imperial">imperial</string>
     <string name="did_you_mean_one_of_the_following">Did you mean one of the following?\n</string>
     <string name="no_locations">There are no locations</string>
     <string name="forecast">Forecast</string>
     <string name="did_you_mean">Did you mean:\n\n</string>
+    <string name="cannot_load_weather_due_to_no_connection">Cannot load weather because there is no internet connection available</string>
 </resources>

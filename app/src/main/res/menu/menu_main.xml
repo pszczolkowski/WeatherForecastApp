@@ -20,11 +20,11 @@
         <menu>
             <item
                 android:id="@+id/action_select_celsius"
-                android:title="@string/celsius"
+                android:title="@string/metric"
                 app:showAsAction="never"/>
             <item
                 android:id="@+id/action_select_fahrenheit"
-                android:title="@string/fahrenheit"
+                android:title="@string/imperial"
                 app:showAsAction="never"/>
         </menu>
     </item>

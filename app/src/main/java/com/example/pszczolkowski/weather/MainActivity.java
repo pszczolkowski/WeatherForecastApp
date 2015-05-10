@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
 import com.example.pszczolkowski.weather.location.Location;
 import com.example.pszczolkowski.weather.location.LocationsManager;
 import com.example.pszczolkowski.weather.util.ConnectionChecker;
@@ -42,40 +41,59 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate( savedInstanceState );
 
-
 		selectedLocation = readSelectedLocation();
+
 		if( selectedLocation == null )
 			displayLocationSelection();
 		else{
-			setContentView( R.layout.activity_main );
-
-			if (savedInstanceState != null) {
-				weatherBasicDataFragment = (WeatherBasicDataFragment) getSupportFragmentManager().getFragment( savedInstanceState , "weatherBasicData" );
-				weatherAdditionalDataFragment= (WeatherAdditionalDataFragment) getSupportFragmentManager().getFragment( savedInstanceState , "weatherAdditionalData" );
-				weatherForecastFragment = (WeatherForecastFragment) getSupportFragmentManager().getFragment( savedInstanceState , "weatherForecast" );
-
-				if( weatherBasicDataFragment == null )
-					weatherBasicDataFragment = new WeatherBasicDataFragment();
-				if( weatherAdditionalDataFragment == null )
-					weatherAdditionalDataFragment = new WeatherAdditionalDataFragment();
-				if( weatherForecastFragment == null )
-					weatherForecastFragment = new WeatherForecastFragment();
-			} else {
-				weatherBasicDataFragment = new WeatherBasicDataFragment();
-				weatherAdditionalDataFragment = new WeatherAdditionalDataFragment();
-				weatherForecastFragment = new WeatherForecastFragment();
-			}
+			initUI( savedInstanceState );
 
 			Weather savedWeather = readWeatherFor( selectedLocation );
 			display( savedWeather );
 
-			ViewPager pager = (ViewPager) findViewById( R.id.pager );
-			PageAdapter adapter = new PageAdapter( getSupportFragmentManager() );
-			pager.setAdapter( adapter );
-			pager.setOffscreenPageLimit( 3 );
+			if( isOutdated( savedWeather ) ){
+				if( isNetworkConnectionAvailable() )
+					loadWeatherFor( selectedLocation );
+				else
+					informThatWeatherCannotBeLoaded();
+			}
+		}
+	}
 
-			if( isOutdated( savedWeather ) )
-				loadWeatherFor( selectedLocation );
+	private void informThatWeatherCannotBeLoaded(){
+		findViewById( R.id.cannot_load_weather_view ).setVisibility( View.VISIBLE );
+		findViewById( R.id.pager ).setVisibility( View.GONE );
+	}
+
+	private void initUI(Bundle savedInstanceState){
+		setContentView( R.layout.activity_main );
+		initializeFragments( savedInstanceState );
+		configureViewPager();
+	}
+
+	private void configureViewPager(){
+		ViewPager pager = (ViewPager) findViewById( R.id.pager );
+		PageAdapter adapter = new PageAdapter( getSupportFragmentManager() );
+		pager.setAdapter( adapter );
+		pager.setOffscreenPageLimit( 3 );
+	}
+
+	private void initializeFragments(Bundle savedInstanceState){
+		if (savedInstanceState != null) {
+			weatherBasicDataFragment = (WeatherBasicDataFragment) getSupportFragmentManager().getFragment( savedInstanceState , "weatherBasicData" );
+			weatherAdditionalDataFragment= (WeatherAdditionalDataFragment) getSupportFragmentManager().getFragment( savedInstanceState , "weatherAdditionalData" );
+			weatherForecastFragment = (WeatherForecastFragment) getSupportFragmentManager().getFragment( savedInstanceState , "weatherForecast" );
+
+			if( weatherBasicDataFragment == null )
+				weatherBasicDataFragment = new WeatherBasicDataFragment();
+			if( weatherAdditionalDataFragment == null )
+				weatherAdditionalDataFragment = new WeatherAdditionalDataFragment();
+			if( weatherForecastFragment == null )
+				weatherForecastFragment = new WeatherForecastFragment();
+		} else {
+			weatherBasicDataFragment = new WeatherBasicDataFragment();
+			weatherAdditionalDataFragment = new WeatherAdditionalDataFragment();
+			weatherForecastFragment = new WeatherForecastFragment();
 		}
 	}
 
@@ -162,6 +180,14 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 	private void display( Weather weather ){
 		if( weather == null )
 			return;
+
+		View cannotLoadWeatherView = findViewById( R.id.cannot_load_weather_view );
+		View pager = findViewById( R.id.pager );
+
+		if( cannotLoadWeatherView != null )
+			cannotLoadWeatherView.setVisibility( View.GONE );
+		if( pager != null )
+			pager.setVisibility( View.VISIBLE );
 
 		weatherBasicDataFragment.setWeatherData( weather );
 		weatherAdditionalDataFragment.setWeatherData( weather );
