@@ -44,19 +44,9 @@ public class WeatherBasicDataFragment extends Fragment{
 		((TextView) view.findViewById( R.id.weather_temperature_min )).setText( "" + weather.condition.tempMin );
 		((TextView) view.findViewById( R.id.weather_temperature_max )).setText( "" + weather.condition.tempMax );
 		((TextView) view.findViewById( R.id.weather_temperature_units )).setText( "" + weather.units.temperature );
-
-		//((TextView) view.findViewById( R.id.weather_pressure )).setText( "" + weather.atmosphere.pressure );
-		//((TextView) view.findViewById( R.id.weather_pressure_units )).setText( "" + weather.units.pressure );
-
-		//((TextView) view.findViewById( R.id.weather_humidity )).setText( "" + weather.atmosphere.humidity);
-
-		//((TextView) view.findViewById( R.id.weather_visibility )).setText( "" + weather.atmosphere.visibility);
 		((TextView) view.findViewById( R.id.weather_description )).setText( "" + weather.condition.description);
 
 		((TextView) view.findViewById( R.id.weather_geographic_coordinates )).setText( weather.location.latitude + ", " + weather.location.longitude );
-
-		//((TextView) view.findViewById( R.id.weather_sunrise )).setText( "" + weather.astronomy.sunRise);
-		//((TextView) view.findViewById( R.id.weather_sunset)).setText( "" + weather.astronomy.sunSet );
 
 		// WCZYTANIE OBRAZKA W ASYNCHRONICZNYM ZADANIU
 		ImageView weatherImage = (ImageView) view.findViewById( R.id.weather_image );
