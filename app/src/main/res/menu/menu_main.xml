@@ -1,0 +1,32 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".MainActivity">
+
+    <item android:id="@+id/action_refresh"
+          android:title="@string/action_refresh"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/action_select_location"
+          android:title="@string/action_select_location"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/action_select_units"
+          android:title="@string/action_select_units"
+          android:orderInCategory="100"
+          app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/action_select_celsius"
+                android:title="@string/celsius"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/action_select_fahrenheit"
+                android:title="@string/fahrenheit"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
+
+</menu>
