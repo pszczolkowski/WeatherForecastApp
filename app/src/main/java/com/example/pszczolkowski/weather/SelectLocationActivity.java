@@ -157,6 +157,9 @@ public class SelectLocationActivity extends ActionBarActivity{
 						sb.append( getResources().getString( R.string.did_you_mean ) );
 						sb.append( foundLocation.getName() );
 						sb.append( "\n" );
+						sb.append( "Country: " );
+						sb.append( foundLocation.getCountry() );
+						sb.append( "\n" );
 
 						for(String admin : foundLocation.getAdmin().keySet()){
 							sb.append( admin );
