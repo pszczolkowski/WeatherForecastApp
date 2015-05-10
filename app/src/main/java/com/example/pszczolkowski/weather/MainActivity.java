@@ -1,20 +1,15 @@
 package com.example.pszczolkowski.weather;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,23 +26,17 @@ import com.example.pszczolkowski.weather.weather.Weather;
 import com.example.pszczolkowski.weather.weather.WeatherLoader;
 import com.example.pszczolkowski.weather.weather.WeatherStore;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity implements WeatherLoader.OnWeatherLoadedListener {
 
 	public static final String SELECTED_LOCATION_NAME = "selectedLocationName";
 	public static final String PREFERENCES_NAME = "sharedPreferenes";
 	private static final String SELECTED_UNITS_NAME = "selectedUnitsName";
-	private String WEATHER_PREFERENCES = "weatherStore";
 	private Location selectedLocation;
 	private WeatherBasicDataFragment weatherBasicDataFragment;
 	private WeatherAdditionalDataFragment weatherAdditionalDataFragment;
 	private WeatherForecastFragment weatherForecastFragment;
-	private PageAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -81,8 +70,9 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 			display( savedWeather );
 
 			ViewPager pager = (ViewPager) findViewById( R.id.pager );
-			adapter = new PageAdapter( getSupportFragmentManager() );
+			PageAdapter adapter = new PageAdapter( getSupportFragmentManager() );
 			pager.setAdapter( adapter );
+			pager.setOffscreenPageLimit( 3 );
 
 			if( isOutdated( savedWeather ) )
 				loadWeatherFor( selectedLocation );
@@ -158,14 +148,6 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 		Toast.makeText( MainActivity.this , R.string.cannot_load_weather , Toast.LENGTH_SHORT ).show();
 	}
 
-
-	private void resetSelectedLocation(){
-		SharedPreferences preferences = getSharedPreferences( MainActivity.PREFERENCES_NAME , Activity.MODE_PRIVATE );
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.remove( SELECTED_LOCATION_NAME );
-		editor.apply();
-	}
-
 	private Location readSelectedLocation(){
 		SharedPreferences preferences = getSharedPreferences( MainActivity.PREFERENCES_NAME , Activity.MODE_PRIVATE );
 		String selectedLocationName = preferences.getString( SELECTED_LOCATION_NAME, null );
@@ -217,7 +199,7 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 		SharedPreferences preferences = getSharedPreferences( PREFERENCES_NAME , Context.MODE_PRIVATE );
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString( SELECTED_UNITS_NAME , units.getUnits() );
-		editor.commit();
+		editor.apply();
 	}
 
 	private String getUnits(){
@@ -252,6 +234,7 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 	@Override
 	protected void onSaveInstanceState(Bundle outState){
 		super.onSaveInstanceState( outState );
+
 		if( weatherBasicDataFragment != null )
 			getSupportFragmentManager().putFragment( outState , "weatherBasicData" , weatherBasicDataFragment );
 		if(weatherAdditionalDataFragment != null )
