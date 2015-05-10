@@ -211,7 +211,7 @@ public class SelectLocationActivity extends ActionBarActivity{
 				}
 
 				@Override
-				public void onError(VolleyError error){
+				public void onError(Exception error){
 					Log.e( "error", error.toString() );
 				}
 			} );

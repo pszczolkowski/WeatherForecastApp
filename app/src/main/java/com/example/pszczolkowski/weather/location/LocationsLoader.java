@@ -2,26 +2,24 @@ package com.example.pszczolkowski.weather.location;
 
 
 import android.content.Context;
-import android.util.Log;
+import android.os.AsyncTask;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +29,7 @@ import java.util.Map;
 /**
  * Kod stworzony na bazie https://github.com/survivingwithandroid/Swa-app/tree/master/AndroidYahooWeather
  */
-public class LocationsLoader implements Response.Listener<String> , Response.ErrorListener{
+public class LocationsLoader implements Response.Listener<String> , Response.ErrorListener, LocationsDownloadTask.OnLocationsLoadedListener{
 
 	private static final int MAX_CACHE_SIZE_BYTES = 1024 * 1024;
 	private Context context;
@@ -42,14 +40,8 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 	}
 
 	public void loadLocationsWithName( String locationName ){
-		Cache cache = new DiskBasedCache( context.getCacheDir() , MAX_CACHE_SIZE_BYTES );
-		Network network = new BasicNetwork( new HurlStack() );
-		RequestQueue requestQueue = new RequestQueue( cache , network );
-
-		String url = queryUrlFor( locationName );
-
-		requestQueue.add( requestFor( url ) );
-		requestQueue.start();
+		URL url = queryUrlFor( locationName );
+		LocationsDownloadTask.subscribe( this ).execute( url );
 	}
 
 	public void addOnLocationsLoadedListener( OnLocationsLoadedListener listener ){
@@ -71,7 +63,7 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 		return new StringRequest( Request.Method.GET, url, this , this );
 	}
 
-	private void notifyListenersAboutError(VolleyError error){
+	private void notifyListenersAboutError(Exception error){
 		for( OnLocationsLoadedListener listener : listeners )
 			listener.onError( error );
 	}
@@ -157,19 +149,32 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 		return locations;
 	}
 
-	private static String queryUrlFor(String locationName) {
+	private static URL queryUrlFor(String locationName) {
 		try{
-			return "https://query.yahooapis.com/v1/public/yql?format=xml&q=" + URLEncoder.encode( "select * from geo.places(1) where text=\"" + locationName + "\"" , "UTF-8" );
+			return new URL( "https://query.yahooapis.com/v1/public/yql?format=xml&q=" + URLEncoder.encode( "select * from geo.places(1) where text=\"" + locationName + "\"" , "UTF-8" ) );
 		}catch(UnsupportedEncodingException e){
+			e.printStackTrace();
+		}catch(MalformedURLException e){
 			e.printStackTrace();
 		}
 
 		return null;
 	}
 
+	@Override
+	public void onLocationsLoaded(String response){
+		notifyListenersAboutSuccess( parse( response ) );
+	}
+
+	@Override
+	public void onLocationsLoadError(Exception e){
+		notifyListenersAboutError( e );
+	}
+
 
 	public static interface OnLocationsLoadedListener{
 		public void onLocationsLoaded( List< Location > locations );
-		public void onError( VolleyError error );
+		public void onError( Exception error );
 	}
+
 }
