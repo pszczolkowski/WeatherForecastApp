@@ -4,8 +4,7 @@
              android:layout_height="match_parent"
              android:orientation="vertical"
              tools:context=".MainActivity"
-    android:background="#FFFFFF"
-    android:paddingTop="30dp">
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +16,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_weight="1"
-            android:paddingLeft="15dp">
+            android:paddingLeft="15dp"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/weather_location_name"
@@ -59,7 +59,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_weight="1"
-            android:gravity="center|top">
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/weather_image"
