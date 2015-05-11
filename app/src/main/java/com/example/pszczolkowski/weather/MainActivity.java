@@ -261,6 +261,10 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 	protected void onSaveInstanceState(Bundle outState){
 		super.onSaveInstanceState( outState );
 
+		View pager = findViewById( R.id.pager );
+		if( pager == null || pager.getVisibility() != View.VISIBLE )
+			return;
+
 		if( weatherBasicDataFragment != null )
 			getSupportFragmentManager().putFragment( outState , "weatherBasicData" , weatherBasicDataFragment );
 		if(weatherAdditionalDataFragment != null )
