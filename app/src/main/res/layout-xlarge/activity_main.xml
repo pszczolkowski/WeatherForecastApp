@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:background="#FFFFFF">
+
+    <!--<fragment
+        android:id="@+id/fragment_weather_basic_data"
+        android:name="com.example.pszczolkowski.weather.WeatherBasicDataFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"/>
+
+    <fragment
+        android:id="@+id/fragment_weather_forecast"
+        android:name="com.example.pszczolkowski.weather.WeatherForecastFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3"/>-->
+
+    <TextView
+        android:id="@+id/cannot_load_weather_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/cannot_load_weather_due_to_no_connection"
+        android:visibility="gone"
+        android:layout_weight="1"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+        <fragment
+            android:id="@+id/fragment_weather_basic_data"
+            android:name="com.example.pszczolkowski.weather.WeatherBasicDataFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <fragment
+            android:id="@+id/fragment_weather_additional_data"
+            android:name="com.example.pszczolkowski.weather.WeatherAdditionalDataFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
+    <fragment
+        android:id="@+id/fragment_weather_forecast"
+        android:name="com.example.pszczolkowski.weather.WeatherForecastFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+</LinearLayout>
+

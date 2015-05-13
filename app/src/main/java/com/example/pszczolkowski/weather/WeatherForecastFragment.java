@@ -30,7 +30,7 @@ public class WeatherForecastFragment extends Fragment{
 	}
 
 	public void reload(){
-		if( getActivity() == null || weather == null )
+		if( getActivity() == null || weather == null || view == null )
 			return;
 
 		LayoutInflater layoutInflater = getActivity().getLayoutInflater();

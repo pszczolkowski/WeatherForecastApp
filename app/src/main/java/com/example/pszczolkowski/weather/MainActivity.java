@@ -62,7 +62,10 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 
 	private void informThatWeatherCannotBeLoaded(){
 		findViewById( R.id.cannot_load_weather_view ).setVisibility( View.VISIBLE );
-		findViewById( R.id.pager ).setVisibility( View.GONE );
+		View pager = findViewById( R.id.pager );
+
+		if( pager != null)
+			pager.setVisibility( View.GONE );
 	}
 
 	private void initUI(Bundle savedInstanceState){
@@ -73,27 +76,39 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 
 	private void configureViewPager(){
 		ViewPager pager = (ViewPager) findViewById( R.id.pager );
-		PageAdapter adapter = new PageAdapter( getSupportFragmentManager() );
-		pager.setAdapter( adapter );
-		pager.setOffscreenPageLimit( 3 );
+		if( pager != null ){
+			PageAdapter adapter = new PageAdapter( getSupportFragmentManager() );
+			pager.setAdapter( adapter );
+			pager.setOffscreenPageLimit( 3 );
+		}
 	}
 
 	private void initializeFragments(Bundle savedInstanceState){
-		if (savedInstanceState != null) {
-			weatherBasicDataFragment = (WeatherBasicDataFragment) getSupportFragmentManager().getFragment( savedInstanceState , "weatherBasicData" );
-			weatherAdditionalDataFragment= (WeatherAdditionalDataFragment) getSupportFragmentManager().getFragment( savedInstanceState , "weatherAdditionalData" );
-			weatherForecastFragment = (WeatherForecastFragment) getSupportFragmentManager().getFragment( savedInstanceState , "weatherForecast" );
+		ViewPager pager = (ViewPager) findViewById( R.id.pager );
 
-			if( weatherBasicDataFragment == null )
+		if( pager != null ){
+			if(savedInstanceState != null){
+				weatherBasicDataFragment = (WeatherBasicDataFragment) getSupportFragmentManager().getFragment( savedInstanceState, "weatherBasicData" );
+				weatherAdditionalDataFragment = (WeatherAdditionalDataFragment) getSupportFragmentManager().getFragment( savedInstanceState, "weatherAdditionalData" );
+				weatherForecastFragment = (WeatherForecastFragment) getSupportFragmentManager().getFragment( savedInstanceState, "weatherForecast" );
+
+				if(weatherBasicDataFragment == null)
+					weatherBasicDataFragment = new WeatherBasicDataFragment();
+				if(weatherAdditionalDataFragment == null)
+					weatherAdditionalDataFragment = new WeatherAdditionalDataFragment();
+				if(weatherForecastFragment == null)
+					weatherForecastFragment = new WeatherForecastFragment();
+			}else{
 				weatherBasicDataFragment = new WeatherBasicDataFragment();
-			if( weatherAdditionalDataFragment == null )
 				weatherAdditionalDataFragment = new WeatherAdditionalDataFragment();
-			if( weatherForecastFragment == null )
 				weatherForecastFragment = new WeatherForecastFragment();
-		} else {
-			weatherBasicDataFragment = new WeatherBasicDataFragment();
-			weatherAdditionalDataFragment = new WeatherAdditionalDataFragment();
-			weatherForecastFragment = new WeatherForecastFragment();
+			}
+		}else{
+			FragmentManager fragmentManager = getSupportFragmentManager();
+
+			weatherBasicDataFragment = (WeatherBasicDataFragment) fragmentManager.findFragmentById( R.id.fragment_weather_basic_data );
+			weatherAdditionalDataFragment = (WeatherAdditionalDataFragment) fragmentManager.findFragmentById( R.id.fragment_weather_additional_data );
+			weatherForecastFragment = (WeatherForecastFragment) fragmentManager.findFragmentById( R.id.fragment_weather_forecast );
 		}
 	}
 
@@ -192,6 +207,10 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 		weatherBasicDataFragment.setWeatherData( weather );
 		weatherAdditionalDataFragment.setWeatherData( weather );
 		weatherForecastFragment.setForecast( weather );
+
+		weatherBasicDataFragment.reload();
+		weatherAdditionalDataFragment.reload();
+		weatherForecastFragment.reload();
 		/*WeatherBasicDataFragment weatherDataFragment = (WeatherBasicDataFragment) getFragmentManager().findFragmentById( R.id.fragment_weather_basic_data );
 		weatherDataFragment.setWeatherData( weather );
 

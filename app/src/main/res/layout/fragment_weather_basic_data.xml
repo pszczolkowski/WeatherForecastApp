@@ -49,7 +49,9 @@
                 <TextView
                     android:id="@+id/weather_time"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:text="13.05.2015 11:00"
+                    android:gravity="end"/>
             </LinearLayout>
 
         </LinearLayout>
