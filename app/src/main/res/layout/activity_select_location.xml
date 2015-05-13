@@ -50,7 +50,11 @@
             android:id="@+id/new_location_name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@drawable/edit_text"
+            android:layout_marginRight="5dp"
+            android:hint="@string/type_name"
+            android:padding="5dp"/>
 
         <Button
             android:id="@+id/addLocationButton"
