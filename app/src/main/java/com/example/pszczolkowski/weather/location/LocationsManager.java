@@ -74,10 +74,6 @@ public class LocationsManager{
 		return result;
 	}
 
-	public boolean containsLocation( Location location ){
-		return getLocations().contains( location );
-	}
-
 	public boolean containsLocationWithName(String locationName){
 		locations = getLocations();
 

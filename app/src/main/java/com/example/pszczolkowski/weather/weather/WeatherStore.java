@@ -49,7 +49,7 @@ public class WeatherStore{
 		try( ObjectInputStream in = new ObjectInputStream( context.openFileInput( FILE_NAME ) ) ) {
 			//noinspection unchecked
 			weathers = (Map< String , Weather >) in.readObject();
-		}catch(FileNotFoundException e){}
+		}catch(FileNotFoundException ignored){}
 		catch (Exception e) {
 			e.printStackTrace();
 		}

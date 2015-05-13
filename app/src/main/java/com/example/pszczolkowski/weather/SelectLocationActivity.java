@@ -16,10 +16,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
 import com.example.pszczolkowski.weather.location.Location;
 import com.example.pszczolkowski.weather.location.LocationsAdapter;
 import com.example.pszczolkowski.weather.location.LocationsLoader;
@@ -137,7 +135,7 @@ public class SelectLocationActivity extends ActionBarActivity{
 		else{
 			final AlertDialog dialog = showAlertDialog( R.string.loading );
 
-			LocationsLoader loader = new LocationsLoader( this );
+			LocationsLoader loader = new LocationsLoader();
 			loader.addOnLocationsLoadedListener( new LocationsLoader.OnLocationsLoadedListener(){
 				@Override
 				public void onLocationsLoaded(List<Location> foundLocations){
@@ -185,32 +183,6 @@ public class SelectLocationActivity extends ActionBarActivity{
 								.show();
 					}
 
-
-					/*Location matchingLocation = findMatchingLocation( foundLocations, locationName );
-
-					Log.e( "testowanie" , matchingLocation.getAdmin().size() + " " + matchingLocation.getAdmin() );
-
-					if( matchingLocation == null ){
-						String text = getResources().getString( R.string.location_doesnt_exist );
-						if( foundLocations.size() > 0 ){
-							text += getResources().getString( R.string.did_you_mean_one_of_the_following ) +
-							foundLocations.toString();
-						}
-
-						new AlertDialog.Builder( SelectLocationActivity.this )
-							.setMessage( text )
-							.setCancelable( true )
-							.setPositiveButton( "OK" , null )
-							.create()
-							.show();
-					}
-					else{
-						locationsAdapter.add( matchingLocation );
-						locationsManager.addLocation( matchingLocation );
-
-						((EditText) findViewById( R.id.new_location_name )).setText( "" );
-						toast( R.string.location_added );
-					}*/
 				}
 
 				@Override
@@ -235,17 +207,6 @@ public class SelectLocationActivity extends ActionBarActivity{
 		dialog.show();
 
 		return dialog;
-	}
-
-	private Location findMatchingLocation(List<Location> locations, String locationName){
-		Location matchingLocation = null;
-		for( Location location : locations ){
-			if( location.getName().equalsIgnoreCase( locationName ) ){
-				matchingLocation = location;
-				break;
-			}
-		}
-		return matchingLocation;
 	}
 
 	private void toast(int string){

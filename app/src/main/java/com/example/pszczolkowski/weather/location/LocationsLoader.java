@@ -1,12 +1,6 @@
 package com.example.pszczolkowski.weather.location;
 
 
-import android.content.Context;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.example.pszczolkowski.weather.util.FileDownloadTask;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -27,15 +21,10 @@ import java.util.Map;
 /**
  * Kod stworzony na bazie https://github.com/survivingwithandroid/Swa-app/tree/master/AndroidYahooWeather
  */
-public class LocationsLoader implements Response.Listener<String> , Response.ErrorListener, FileDownloadTask.OnFileDownloadedListener{
+public class LocationsLoader implements FileDownloadTask.OnFileDownloadedListener{
 
-	private static final int MAX_CACHE_SIZE_BYTES = 1024 * 1024;
-	private Context context;
 	private List< OnLocationsLoadedListener > listeners = new ArrayList<>();
 
-	public LocationsLoader(Context context){
-		this.context = context;
-	}
 
 	public void loadLocationsWithName( String locationName ){
 		URL url = queryUrlFor( locationName );
@@ -44,21 +33,6 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 
 	public void addOnLocationsLoadedListener( OnLocationsLoadedListener listener ){
 		listeners.add( listener );
-	}
-
-	@Override
-	public void onResponse(String response){
-		notifyListenersAboutSuccess( parse( response ) );
-	}
-
-	@Override
-	public void onErrorResponse(VolleyError error){
-		notifyListenersAboutError( error );
-	}
-
-
-	private StringRequest requestFor(String url){
-		return new StringRequest( Request.Method.GET, url, this , this );
 	}
 
 	private void notifyListenersAboutError(Exception error){
@@ -80,9 +54,6 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 			int eventType = parser.getEventType();
 
 			String tagName = null;
-			String locationWoeid = null;
-			String locationName = null;
-			String locationCountry = null;
 			Map< String , String > admin = new HashMap<>();
 			Location location = new Location(  );
 			String adminType = null;
@@ -90,11 +61,7 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				if (eventType == XmlPullParser.START_TAG) {
 					tagName = parser.getName();
-					if ( "place".equals( tagName ) ) {
-						locationWoeid = null;
-						locationName = null;
-						locationCountry = null;
-					}else if( "admin1".equals( tagName ) ||
+					if( "admin1".equals( tagName ) ||
 							"admin2".equals( tagName ) ||
 							"admin3".equals( tagName )){
 						adminType = parser.getAttributeValue( null , "type" );
@@ -103,15 +70,12 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 				else if (eventType == XmlPullParser.TEXT) {
 					switch( tagName ){
 						case "woeid":
-							//locationWoeid = parser.getText();
 							location.setWoeid( parser.getText() );
 							break;
 						case "name":
-							//locationName = parser.getText();
 							location.setName( parser.getText() );
 							break;
 						case "country":
-							//locationCountry = parser.getText();
 							location.setCountry( parser.getText() );
 							break;
 						case "admin1":
@@ -124,9 +88,6 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 				else if (eventType == XmlPullParser.END_TAG) {
 					tagName = parser.getName();
 					if ( "place".equals( tagName ) ){
-						//Location location = new Location( locationName );
-						//location.setWoeid( locationWoeid );
-						//location.setCountry( locationCountry );
 
 						for( String type : admin.keySet() ){
 							location.putAdmin( type , admin.get( type ) );
@@ -150,9 +111,7 @@ public class LocationsLoader implements Response.Listener<String> , Response.Err
 	private static URL queryUrlFor(String locationName) {
 		try{
 			return new URL( "https://query.yahooapis.com/v1/public/yql?format=xml&q=" + URLEncoder.encode( "select * from geo.places(1) where text=\"" + locationName + "\"" , "UTF-8" ) );
-		}catch(UnsupportedEncodingException e){
-			e.printStackTrace();
-		}catch(MalformedURLException e){
+		}catch(UnsupportedEncodingException | MalformedURLException e){
 			e.printStackTrace();
 		}
 

@@ -7,20 +7,6 @@
     tools:context=".MainActivity"
     android:background="#FFFFFF">
 
-    <!--<fragment
-        android:id="@+id/fragment_weather_basic_data"
-        android:name="com.example.pszczolkowski.weather.WeatherBasicDataFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="2"/>
-
-    <fragment
-        android:id="@+id/fragment_weather_forecast"
-        android:name="com.example.pszczolkowski.weather.WeatherForecastFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="3"/>-->
-
     <TextView
         android:id="@+id/cannot_load_weather_view"
         android:layout_width="match_parent"

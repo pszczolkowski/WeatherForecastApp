@@ -141,7 +141,6 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 
 		//noinspection SimplifiableIfStatement
 		if(id == R.id.action_select_location){
-			//resetSelectedLocation();
 			displayLocationSelection();
 			return true;
 		}else if( id == R.id.action_refresh ){
@@ -211,11 +210,6 @@ public class MainActivity extends ActionBarActivity implements WeatherLoader.OnW
 		weatherBasicDataFragment.reload();
 		weatherAdditionalDataFragment.reload();
 		weatherForecastFragment.reload();
-		/*WeatherBasicDataFragment weatherDataFragment = (WeatherBasicDataFragment) getFragmentManager().findFragmentById( R.id.fragment_weather_basic_data );
-		weatherDataFragment.setWeatherData( weather );
-
-		WeatherForecastFragment weatherForecastFragment = (WeatherForecastFragment) getFragmentManager().findFragmentById( R.id.fragment_weather_forecast );
-		weatherForecastFragment.setForecast( weather.forecast );*/
 	}
 
 	private void displayLocationSelection(){

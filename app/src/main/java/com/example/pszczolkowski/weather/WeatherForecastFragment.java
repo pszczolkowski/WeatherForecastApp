@@ -2,7 +2,6 @@ package com.example.pszczolkowski.weather;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +10,9 @@ import android.widget.TextView;
 
 import com.example.pszczolkowski.weather.weather.Weather;
 
-import java.util.List;
-
 public class WeatherForecastFragment extends Fragment{
 
 	private View view;
-	//private List< Weather.Forecast > forecast;
 	private Weather weather;
 
 	@Override

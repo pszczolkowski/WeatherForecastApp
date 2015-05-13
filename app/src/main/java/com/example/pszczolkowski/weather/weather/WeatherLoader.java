@@ -1,8 +1,6 @@
 package com.example.pszczolkowski.weather.weather;
 
 
-import android.content.Context;
-
 import com.example.pszczolkowski.weather.location.Location;
 import com.example.pszczolkowski.weather.util.FileDownloadTask;
 
